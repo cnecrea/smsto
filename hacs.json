@@ -1,0 +1,9 @@
+{
+  "name": "SMS Notifications via SMS.to",
+  "content_in_root": false,
+  "country": "RO",
+  "domains": ["notify"],
+  "homeassistant": "2021.12.0",
+  "render_readme": true,
+  "iot_class": ["Cloud Push"]
+}

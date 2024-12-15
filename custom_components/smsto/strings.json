@@ -1,0 +1,71 @@
+{
+  "title": "SMS Notifications via SMS.to",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure SMS.to",
+        "description": "Enter your API key and sender ID to set up SMS.to notifications.",
+        "data": {
+          "api_key": "API Key",
+          "sender_id": "Sender ID"
+        }
+      },
+      "test_message": {
+        "title": "Send Test Message",
+        "description": "Enter a phone number to send a test SMS and verify your configuration.",
+        "data": {
+          "test_number": "Phone Number"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "The API key provided is invalid. Please enter a valid API key.",
+      "invalid_sender_id": "The sender ID provided is invalid. Please enter a valid sender ID.",
+      "invalid_test_number": "The test phone number provided is invalid. Please enter a valid number.",
+      "test_message_failed": "Failed to send the test message. Please check your configuration and try again."
+    },
+    "abort": {
+      "already_configured": "This account is already configured. Update the existing integration if needed."
+    }
+  },
+  "services": {
+    "notify_smsto": {
+      "name": "Send SMS via SMS.to",
+      "description": "Send an SMS notification through SMS.to",
+      "fields": {
+        "message": {
+          "name": "Message",
+          "description": "The text of the notification to send. This is a required field."
+        },
+        "title": {
+          "name": "Title",
+          "description": "The title of the notification (optional). This will appear before the message text."
+        },
+        "target": {
+          "name": "Target",
+          "description": "A list of phone numbers to send the notification to. Each number should be in international format."
+        },
+        "data": {
+          "name": "Additional Data",
+          "description": "Platform-specific additional data (e.g., callback URL, priority). Include any extra parameters required by SMS.to."
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Modify SMS.to Settings",
+        "description": "Update your API key or sender ID for SMS.to notifications.",
+        "data": {
+          "api_key": "API Key",
+          "sender_id": "Sender ID"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "The updated API key is invalid. Please check and try again.",
+      "invalid_sender_id": "The updated sender ID is invalid. Please check and try again."
+    }
+  }
+}
