@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurer SMS.to",
+        "description": "Saisissez la clé API et l'ID de l'expéditeur pour configurer les notifications SMS.to.",
+        "data": {
+          "api_key": "Clé API",
+          "sender_id": "ID de l'expéditeur"
+        }
+      },
+      "test_message": {
+        "title": "Message de test",
+        "description": "Saisissez un numéro de téléphone pour envoyer un message de test et vérifier l'intégration.",
+        "data": {
+          "test_number": "Numéro de téléphone de test"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "La clé API fournie n'est pas valide. Veuillez saisir une clé API valide.",
+      "invalid_sender_id": "L'ID de l'expéditeur fourni n'est pas valide. Veuillez saisir un ID valide.",
+      "server_unavailable": "Le serveur SMS.to est actuellement indisponible. Veuillez réessayer plus tard.",
+      "api_key_expired": "La clé API a expiré. Veuillez mettre à jour la clé API.",
+      "invalid_test_number": "Le numéro de téléphone de test n'est pas valide. Veuillez saisir un numéro valide.",
+      "test_message_failed": "L'envoi du message de test a échoué. Veuillez vérifier la configuration et réessayer."
+    },
+    "abort": {
+      "already_configured": "Ce compte est déjà configuré. Mettez à jour l'intégration existante si nécessaire."
+    }
+  },
+  "services": {
+    "notify_smsto": {
+      "name": "Notification SMS.to",
+      "description": "Envoyez une notification SMS via SMS.to.",
+      "fields": {
+        "message": {
+          "name": "Message",
+          "description": "Le texte de la notification à envoyer. Ce champ est obligatoire.",
+          "example": "Votre commande a été expédiée !"
+        },
+        "title": {
+          "name": "Titre",
+          "description": "Le titre de la notification (facultatif). Il apparaîtra au-dessus du texte du message.",
+          "example": "Mise à jour de la commande"
+        },
+        "target": {
+          "name": "Destinataire",
+          "description": "Une liste de numéros de téléphone auxquels envoyer la notification. Chaque numéro doit être au format international.",
+          "example": "+40730040302, +40740040303"
+        },
+        "data": {
+          "name": "Données supplémentaires",
+          "description": "Données spécifiques à la plateforme, comme une URL de rappel ou un niveau de priorité.",
+          "example": "callback_url=https://example.com/callback"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Modifier les paramètres SMS.to",
+        "description": "Mettez à jour la clé API ou l'ID de l'expéditeur pour les notifications SMS.to.",
+        "data": {
+          "api_key": "Clé API",
+          "sender_id": "ID de l'expéditeur"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "La clé API mise à jour n'est pas valide. Veuillez vérifier et réessayer.",
+      "invalid_sender_id": "L'ID de l'expéditeur mis à jour n'est pas valide. Veuillez vérifier et réessayer."
+    }
+  }
+}
