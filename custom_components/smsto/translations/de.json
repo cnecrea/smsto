@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SMS.to einrichten",
+        "description": "Geben Sie den API-Schlüssel und die Absender-ID ein, um SMS.to-Benachrichtigungen einzurichten.",
+        "data": {
+          "api_key": "API-Schlüssel",
+          "sender_id": "Absender-ID"
+        }
+      },
+      "test_message": {
+        "title": "Testnachricht",
+        "description": "Geben Sie eine Telefonnummer ein, um eine Testnachricht zu senden und die Integration zu überprüfen.",
+        "data": {
+          "test_number": "Test-Telefonnummer"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "Der angegebene API-Schlüssel ist ungültig. Bitte geben Sie einen gültigen API-Schlüssel ein.",
+      "invalid_sender_id": "Die angegebene Absender-ID ist ungültig. Bitte geben Sie eine gültige Absender-ID ein.",
+      "server_unavailable": "Der SMS.to-Server ist derzeit nicht verfügbar. Bitte versuchen Sie es später erneut.",
+      "api_key_expired": "Der API-Schlüssel ist abgelaufen. Bitte aktualisieren Sie den API-Schlüssel.",
+      "invalid_test_number": "Die angegebene Test-Telefonnummer ist ungültig. Bitte geben Sie eine gültige Nummer ein.",
+      "test_message_failed": "Das Senden der Testnachricht ist fehlgeschlagen. Bitte überprüfen Sie die Konfiguration und versuchen Sie es erneut."
+    },
+    "abort": {
+      "already_configured": "Dieses Konto ist bereits konfiguriert. Aktualisieren Sie die bestehende Integration, falls erforderlich."
+    }
+  },
+  "services": {
+    "notify_smsto": {
+      "name": "SMS.to-Benachrichtigung",
+      "description": "Senden Sie eine SMS-Benachrichtigung über SMS.to.",
+      "fields": {
+        "message": {
+          "name": "Nachricht",
+          "description": "Der Text der zu sendenden Benachrichtigung. Dieses Feld ist erforderlich.",
+          "example": "Ihre Bestellung wurde versandt!"
+        },
+        "title": {
+          "name": "Titel",
+          "description": "Der Titel der Benachrichtigung (optional). Er erscheint über dem Nachrichtentext.",
+          "example": "Bestellaktualisierung"
+        },
+        "target": {
+          "name": "Empfänger",
+          "description": "Eine Liste von Telefonnummern, an die die Benachrichtigung gesendet werden soll. Jede Nummer muss im internationalen Format vorliegen.",
+          "example": "+40730040302, +40740040303"
+        },
+        "data": {
+          "name": "Zusätzliche Daten",
+          "description": "Plattform-spezifische zusätzliche Daten, wie z. B. eine Callback-URL oder Prioritätsstufe.",
+          "example": "callback_url=https://example.com/callback"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SMS.to-Einstellungen ändern",
+        "description": "Aktualisieren Sie den API-Schlüssel oder die Absender-ID für SMS.to-Benachrichtigungen.",
+        "data": {
+          "api_key": "API-Schlüssel",
+          "sender_id": "Absender-ID"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "Der aktualisierte API-Schlüssel ist ungültig. Bitte überprüfen und erneut versuchen.",
+      "invalid_sender_id": "Die aktualisierte Absender-ID ist ungültig. Bitte überprüfen und erneut versuchen."
+    }
+  }
+}
