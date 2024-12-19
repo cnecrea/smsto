@@ -9,5 +9,6 @@
   "version": "1.1.0",
   "config_flow": true,
   "service": "services.yaml",
-  "issue_tracker": "https://github.com/cnecrea/smsto/issues"
+  "issue_tracker": "https://github.com/cnecrea/smsto/issues",
+  "platforms": ["notify", "sensor"]
 }
