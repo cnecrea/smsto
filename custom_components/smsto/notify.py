@@ -17,6 +17,31 @@ ERROR_MESSAGES = {
 }
 
 
+async def async_get_service(hass, config, discovery_info=None):
+    """Set up the SMS.to notification service."""
+    api_key = config["api_key"]
+    sender_id = config["sender_id"]
+
+    # Log pentru debug
+    _LOGGER.debug("Setting up SMS.to notify service with API key: %s and sender ID: %s", api_key[:4] + "****", sender_id)
+
+    # Înregistrăm serviciul direct din fișierul services.yaml
+    await hass.helpers.service.async_set_service_schema(
+        "notify", "smsto", {
+            "name": "SMS.to Notification",
+            "description": "Send an SMS notification through SMS.to",
+            "fields": {
+                "message": {"description": "The text to send", "required": True},
+                "title": {"description": "The title of the message", "required": False},
+                "target": {"description": "Phone numbers to notify", "required": True},
+                "data": {"description": "Additional options for the message", "required": False},
+            },
+        }
+    )
+
+    return SMSToNotificationService(api_key, sender_id)
+
+
 class SMSToNotificationService(BaseNotificationService):
     """Implementation of the SMS.to notification service."""
 
@@ -39,12 +64,6 @@ class SMSToNotificationService(BaseNotificationService):
         title = kwargs.get("title", "")
         data = kwargs.get("data", {})
 
-        # Handle test message
-        if message == "TEST_MESSAGE":
-            _LOGGER.info("Test message detected. Skipping API call.")
-            _LOGGER.debug("Test Message Details: Title: %s, Target: %s, Data: %s", title, target, data)
-            return  # Skip API call for test messages
-
         # Validate target
         if not target:
             _LOGGER.error("No target phone number provided.")
@@ -54,7 +73,6 @@ class SMSToNotificationService(BaseNotificationService):
             _LOGGER.error("Invalid target format. Must be a list of phone numbers.")
             raise HomeAssistantError("Invalid target format. Must be a list of phone numbers.")
 
-        # Validate data
         if not isinstance(data, dict):
             _LOGGER.error("Invalid 'data' format. Must be a dictionary.")
             raise HomeAssistantError("Invalid 'data' format. Must be a dictionary.")
@@ -72,14 +90,9 @@ class SMSToNotificationService(BaseNotificationService):
             "Content-Type": "application/json",
         }
 
-        _LOGGER.debug("Payload being sent: %s", payload)
-        _LOGGER.debug("Headers being sent: %s", headers)
-
-        # Send the request
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
             try:
                 url = "https://api.sms.to/sms/send"
-                _LOGGER.debug("Sending POST request to URL: %s", url)
                 async with session.post(url, json=payload, headers=headers) as response:
                     response_text = await response.text()
 
@@ -113,28 +126,17 @@ class SMSToNotificationService(BaseNotificationService):
             "Content-Type": "application/json",
         }
 
-        _LOGGER.debug("Fetching balance with URL: %s", url)
-
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(url, headers=headers) as response:
                     response_text = await response.text()
-                    _LOGGER.debug("Response received for balance: %s", response_text)
-
                     if response.status == 200:
                         data = await response.json()
-                        _LOGGER.debug("Balance fetched successfully: %s", data)
-                        return data
+                        return {"balance": data.get("balance")}
                     else:
                         error_message = ERROR_MESSAGES.get(response.status, ERROR_MESSAGES["default"])
-                        _LOGGER.error(
-                            "Failed to fetch balance. Status: %s, Error: %s",
-                            response.status,
-                            error_message,
-                        )
-                        raise HomeAssistantError(f"Error fetching balance: {response.status}")
+                        raise HomeAssistantError(f"Error fetching balance: {error_message}")
             except Exception as e:
-                _LOGGER.error("Error during balance API call: %s", e)
                 raise HomeAssistantError(f"Balance API error: {e}")
 
     async def get_total_messages(self):
@@ -145,31 +147,15 @@ class SMSToNotificationService(BaseNotificationService):
             "Content-Type": "application/json",
         }
 
-        _LOGGER.debug("Fetching total messages with URL: %s", url)
-
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(url, headers=headers) as response:
                     response_text = await response.text()
-                    _LOGGER.debug("Response received for total messages: %s", response_text)
-
                     if response.status == 200:
                         data = await response.json()
-                        if isinstance(data, dict) and "total" in data:
-                            total = data["total"]
-                            _LOGGER.debug("Total messages fetched successfully: %d", total)
-                            return total
-                        else:
-                            _LOGGER.warning("Unexpected response format for total messages: %s", data)
-                            return 0
+                        return data.get("total", 0)
                     else:
                         error_message = ERROR_MESSAGES.get(response.status, ERROR_MESSAGES["default"])
-                        _LOGGER.error(
-                            "Failed to fetch total messages. Status: %s, Error: %s",
-                            response.status,
-                            error_message,
-                        )
-                        raise HomeAssistantError(f"Error fetching total messages: {response.status}")
+                        raise HomeAssistantError(f"Error fetching total messages: {error_message}")
             except Exception as e:
-                _LOGGER.error("Error during total messages API call: %s", e)
                 raise HomeAssistantError(f"Total messages API error: {e}")
