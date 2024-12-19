@@ -1,21 +1,24 @@
 notify.smsto:
   name: SMS.to Notification
-  description: Send an SMS notification through SMS.to
+  description: Send an SMS notification through SMS.to.
   fields:
     message:
       name: Message
-      description: The text of the notification to send.
+      description: The text of the SMS notification.
       required: true
       example: "The garage door is open."
     title:
       name: Title
-      description: The title of the notification (optional).
-      example: "Garage Door Alert"
+      description: Optional title of the SMS notification.
+      example: "Garage Alert"
     target:
       name: Target
-      description: Phone numbers to send the notification to.
-      example: ["+40730040302"]
+      description: List of phone numbers to send the SMS to. Each number should be in international format.
+      example:
+        - "+40730040302"
+        - "+40740040303"
     data:
       name: Additional Data
-      description: Platform-specific additional data.
-      example: {"callback_url": "https://example.com"}
+      description: Platform-specific additional data, like callback URL or priority.
+      example:
+        callback_url: "https://example.com"
