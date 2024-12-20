@@ -10,5 +10,7 @@
   "config_flow": true,
   "service": "services.yaml",
   "issue_tracker": "https://github.com/cnecrea/smsto/issues",
-  "platforms": ["notify", "sensor"]
+  "platforms": ["notify", "sensor"],
+  "brand": "smsto"
+
 }
