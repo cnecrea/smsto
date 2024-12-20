@@ -1,0 +1,16 @@
+{
+  "domain": "smsto",
+  "name": "SMS Notifications via SMS.to",
+  "documentation": "https://github.com/cnecrea/smsto",
+  "dependencies": [],
+  "codeowners": ["@cnecrea"],
+  "requirements": ["aiohttp>=3.8.0"],
+  "iot_class": "cloud_push",
+  "version": "1.1.0",
+  "config_flow": true,
+  "service": "services.yaml",
+  "issue_tracker": "https://github.com/cnecrea/smsto/issues",
+  "platforms": ["notify", "sensor"],
+  "brand": "smsto"
+
+}
