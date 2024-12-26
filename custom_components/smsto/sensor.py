@@ -2,8 +2,11 @@
 import logging
 from datetime import timedelta
 from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.util import Throttle
 from .notify import SMSToNotificationService
+from .const import DOMAIN
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,6 +71,17 @@ class SMSToBalanceSensor(Entity):
             "unit_of_measurement": self._unit,
         }
 
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, "smsto")},
+            "name": "SMS Notifications via SMS.to",
+            "manufacturer": "SMS.to",
+            "model": "SMS Notifications via SMS.to",
+            "entry_type": DeviceEntryType.SERVICE,
+        }
+
+
     @Throttle(SCAN_INTERVAL)
     async def async_update(self, no_throttle=False):
         """Fetch balance data from SMS.to API."""
@@ -124,6 +138,17 @@ class SMSToTotalMessagesSensor(Entity):
         return {
             "friendly_name": "Total SMS Sent",
         }
+
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, "smsto")},
+            "name": "SMS Notifications via SMS.to",
+            "manufacturer": "SMS.to",
+            "model": "SMS Notifications via SMS.to",
+            "entry_type": DeviceEntryType.SERVICE,
+        }
+
 
     @Throttle(SCAN_INTERVAL)
     async def async_update(self, no_throttle=False):
