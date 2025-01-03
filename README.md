@@ -96,6 +96,18 @@ This card will display the account balance and the total number of SMS sent dire
 - An active SMS.to account. 
 - A valid API Key and configured Sender ID from SMS.to. 
 
+---
+## ☕ Support the Developer
+
+If you enjoyed this integration and want to support the work behind it, **buy me a coffee**! 🫶  
+It costs nothing, and your contribution helps with future development. 🙌  
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support%20the%20developer-orange?style=for-the-badge&logo=buy-me-a-coffee)](https://www.buymeacoffee.com/cnecrea)
+
+Thank you for your support, and I truly appreciate every gesture of encouragement! 🤗
+
+---
+
 
 ## 🧑‍💻 Contributions
 - Contributions are welcome! Create a pull request or report issues [here](https://github.com/cnecrea/smsto/issues).
