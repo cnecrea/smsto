@@ -1,6 +1,6 @@
-# 📲 SMS Notifications via SMS.to
+![icon](https://github.com/user-attachments/assets/a489906a-98ae-466e-962f-744a6cc497ae)
 
-![SMS.to Logo](custom_components/smsto/icons/home-assistant.png)
+# 📲 SMS Notifications via SMS.to
 
 **SMS Notifications via SMS.to** is a custom integration for [Home Assistant](https://www.home-assistant.io/) that enables sending SMS notifications directly through the **SMS.to** service.
 
