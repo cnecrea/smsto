@@ -4,10 +4,9 @@
     "codeowners": ["@cnecrea"],
     "config_flow": true,
     "dependencies": [],
-    "requirements": ["aiohttp>=3.8.0"],
     "documentation": "https://github.com/cnecrea/smsto",
     "iot_class": "cloud_push",
     "issue_tracker": "https://github.com/cnecrea/smsto/issues",
-    "requirements": [],
+    "requirements": ["aiohttp>=3.8.0"],
     "version": "1.0.0"
 }
