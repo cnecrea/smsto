@@ -3,11 +3,13 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.service import async_set_service_schema
 import voluptuous as vol
 from homeassistant.exceptions import HomeAssistantError
-
 from .const import DOMAIN
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 _LOGGER = logging.getLogger(__name__)
 
