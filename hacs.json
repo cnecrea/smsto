@@ -1,18 +1,4 @@
 {
-  "name": "SMS Notifications via SMS.to",
-  "country": "RO",
-  "domain": "smsto",
-  "codeowners": ["@cnecrea"],
-  "homeassistant": "2021.12.0",
-  "render_readme": true,
-  "iot_class": ["Cloud Push"],
-  "documentation": "https://github.com/cnecrea/smsto",
-  "issue_tracker": "https://github.com/cnecrea/smsto/issues",
-  "config_flow": true,
-  "requirements": [],
-  "persistent_directory": "userfiles",
-  "content_in_root": false,
-  "version": "1.0.0",
-  "zip_release": true,
-  "filename": "smsto.zip"
+    "name": "SMS Notifications via SMS.to",
+    "render_readme": true
 }
