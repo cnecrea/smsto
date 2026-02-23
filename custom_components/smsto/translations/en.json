@@ -3,56 +3,60 @@
     "step": {
       "user": {
         "title": "Configure SMS.to",
-        "description": "Enter your API key and sender ID to set up SMS.to notifications.",
+        "description": "Enter the API key and sender ID to configure SMS.to notifications.",
         "data": {
           "api_key": "API Key",
           "sender_id": "Sender ID"
         }
       },
       "test_message": {
-        "title": "Send Test Message",
-        "description": "Enter a phone number to send a test message and verify that the integration is working.",
+        "title": "Test Message",
+        "description": "Enter a phone number to send a test message and verify the integration functionality.",
         "data": {
           "test_number": "Test Phone Number"
         }
       }
     },
     "error": {
-      "invalid_api_key": "The API key provided is invalid. Please enter a valid API key.",
-      "invalid_sender_id": "The sender ID provided is invalid. Please enter a valid sender ID.",
-      "server_unavailable": "The SMS.to server is currently unavailable. Please try again later.",
-      "api_key_expired": "Your API key has expired. Please update your API key.",
-      "invalid_test_number": "The test phone number provided is invalid. Please enter a valid phone number.",
-      "test_message_failed": "Failed to send the test message. Please check your configuration and try again."
+      "invalid_api_key": "The provided API key is invalid. Please enter a valid API key.",
+      "invalid_sender_id": "The provided sender ID is invalid. Please enter a valid sender ID.",
+      "invalid_test_number": "The test phone number is invalid. Please enter a valid number.",
+      "test_message_failed": "Sending the test message failed. Please check the configuration and try again."
     },
     "abort": {
-      "already_configured": "This account is already configured. Update the existing integration if needed."
+      "already_configured": "This account is already configured. Update the existing integration if necessary."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "balance": {
+        "name": "Balance"
+      },
+      "total_messages": {
+        "name": "Total SMS Sent"
+      }
     }
   },
   "services": {
     "notify_smsto": {
-      "name": "Send SMS via SMS.to",
-      "description": "Send an SMS notification through SMS.to.",
+      "name": "SMS.to Notification",
+      "description": "Send an SMS notification via SMS.to.",
       "fields": {
         "message": {
           "name": "Message",
-          "description": "The text of the notification to send. This is a required field.",
-          "example": "Your order has been shipped!"
+          "description": "The notification text to be sent. This field is required."
         },
         "title": {
           "name": "Title",
-          "description": "The title of the notification (optional). This will appear above the message text.",
-          "example": "Shipping Update"
+          "description": "Notification title (optional). It will appear above the message text."
         },
         "target": {
-          "name": "Target",
-          "description": "A list of phone numbers to send the notification to. Each number should be in international format.",
-          "example": "+1234567890, +0987654321"
+          "name": "Recipient",
+          "description": "A list of phone numbers to which the notification will be sent. Each number must be in international format."
         },
         "data": {
           "name": "Additional Data",
-          "description": "Platform-specific additional data, such as a callback URL or priority level.",
-          "example": "callback_url=https://example.com/callback"
+          "description": "Platform-specific additional data such as a callback URL or priority level."
         }
       }
     }
@@ -61,7 +65,7 @@
     "step": {
       "init": {
         "title": "Modify SMS.to Settings",
-        "description": "Update your API key or sender ID for SMS.to notifications.",
+        "description": "Update the API key or sender ID for SMS.to notifications.",
         "data": {
           "api_key": "API Key",
           "sender_id": "Sender ID"
@@ -69,8 +73,8 @@
       }
     },
     "error": {
-      "invalid_api_key": "The updated API key is invalid. Please check and try again.",
-      "invalid_sender_id": "The updated sender ID is invalid. Please check and try again."
+      "invalid_api_key": "The updated API key is invalid. Please verify and try again.",
+      "invalid_sender_id": "The updated sender ID is invalid. Please verify and try again."
     }
   }
 }
