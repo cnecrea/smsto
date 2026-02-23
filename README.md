@@ -105,7 +105,7 @@ entities:
 ## 🔑 Requirements
 
 - An active [SMS.to](https://sms.to) account.  
-- A valid **API Key** (generate one at [app.sms.to/](https://app.sms.to/)).  
+- A valid **API Key** (generate one at [app.sms.to/](https://app.sms.to)).  
 - A configured **Sender ID** (phone number or alphanumeric ID).  
 
 ---
