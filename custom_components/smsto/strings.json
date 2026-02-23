@@ -28,6 +28,16 @@
       "already_configured": "This account is already configured. Update the existing integration if needed."
     }
   },
+  "entity": {
+    "sensor": {
+      "balance": {
+        "name": "Balance"
+      },
+      "total_messages": {
+        "name": "Total SMS Sent"
+      }
+    }
+  },
   "services": {
     "notify_smsto": {
       "name": "Send SMS via SMS.to",
