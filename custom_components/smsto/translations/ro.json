@@ -20,13 +20,21 @@
     "error": {
       "invalid_api_key": "Cheia API furnizată este invalidă. Te rugăm să introduci o cheie API validă.",
       "invalid_sender_id": "ID-ul Expeditorului furnizat este invalid. Te rugăm să introduci un ID Expeditor valid.",
-      "server_unavailable": "Serverul SMS.to este indisponibil momentan. Te rugăm să încerci din nou mai târziu.",
-      "api_key_expired": "Cheia API a expirat. Te rugăm să actualizezi cheia API.",
       "invalid_test_number": "Numărul de telefon pentru test este invalid. Te rugăm să introduci un număr valid.",
       "test_message_failed": "Trimiterea mesajului de test a eșuat. Te rugăm să verifici configurația și să încerci din nou."
     },
     "abort": {
       "already_configured": "Acest cont este deja configurat. Actualizează integrarea existentă dacă este necesar."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "balance": {
+        "name": "Balanță"
+      },
+      "total_messages": {
+        "name": "Total SMS Trimise"
+      }
     }
   },
   "services": {
@@ -36,23 +44,19 @@
       "fields": {
         "message": {
           "name": "Mesaj",
-          "description": "Textul notificării care trebuie trimis. Acest câmp este obligatoriu.",
-          "example": "Comanda ta a fost expediată!"
+          "description": "Textul notificării care trebuie trimis. Acest câmp este obligatoriu."
         },
         "title": {
           "name": "Titlu",
-          "description": "Titlul notificării (opțional). Acesta va apărea deasupra textului mesajului.",
-          "example": "Actualizare Comandă"
+          "description": "Titlul notificării (opțional). Acesta va apărea deasupra textului mesajului."
         },
         "target": {
           "name": "Destinatar",
-          "description": "O listă de numere de telefon către care se trimite notificarea. Fiecare număr trebuie să fie în format internațional.",
-          "example": "+40730040302, +40740040303"
+          "description": "O listă de numere de telefon către care se trimite notificarea. Fiecare număr trebuie să fie în format internațional."
         },
         "data": {
           "name": "Date Suplimentare",
-          "description": "Date suplimentare specifice platformei, precum un URL de callback sau nivelul de prioritate.",
-          "example": "callback_url=https://example.com/callback"
+          "description": "Date suplimentare specifice platformei, precum un URL de callback sau nivelul de prioritate."
         }
       }
     }
