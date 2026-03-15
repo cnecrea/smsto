@@ -1,18 +1,7 @@
 {
   "repo": "",
   "prima_colectare": "",
-  "ultima_actualizare": "2026-03-15T19:58:14Z",
-  "zilnic": {
-    "2026-03-15": {
-      "stars": 3,
-      "forks": 0,
-      "watchers": 0,
-      "open_issues": 0
-    }
-  },
-  "releases": {
-    "2.0.0": 1,
-    "1.1.0": 4,
-    "1.0.0": 10
-  }
+  "ultima_actualizare": "",
+  "zilnic": {},
+  "releases": {}
 }
