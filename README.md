@@ -1,6 +1,4 @@
-![icon](https://github.com/user-attachments/assets/a489906a-98ae-466e-962f-744a6cc497ae)
-
-# 📲 SMS Notifications via SMS.to
+# SMS Notifications via SMS.to — Integrare Home Assistant
 
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2025.11%2B-41BDF5?logo=homeassistant&logoColor=white)](https://www.home-assistant.io/)
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
