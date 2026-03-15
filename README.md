@@ -1,8 +1,12 @@
 ![icon](https://github.com/user-attachments/assets/a489906a-98ae-466e-962f-744a6cc497ae)
 
 # 📲 SMS Notifications via SMS.to
+[![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2025.11%2B-41BDF5?logo=homeassistant&logoColor=white)](https://www.home-assistant.io/)
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![GitHub Release](https://img.shields.io/github/v/release/cnecrea/smsto)](https://github.com/cnecrea/smsto/releases)
+[![GitHub Stars](https://img.shields.io/github/stars/cnecrea/smsto?style=flat&logo=github)](https://github.com/cnecrea/smsto/stargazers)
+[![Total descărcări](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/cnecrea/smsto/main/statistici/shields/descarcari.json)](https://github.com/cnecrea/smsto/releases)
+[![Descărcări ultima versiune](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/cnecrea/smsto/main/statistici/shields/ultima_release.json)](https://github.com/cnecrea/smsto/releases/latest)
 
 
 **SMS Notifications via SMS.to** is a custom integration for [Home Assistant](https://www.home-assistant.io/) that enables sending SMS notifications directly through the **[SMS.to](https://sms.to)** service.
