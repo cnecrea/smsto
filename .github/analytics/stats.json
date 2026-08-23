@@ -1,7 +1,7 @@
 {
   "repo": "",
   "prima_colectare": "",
-  "ultima_actualizare": "2026-08-22T06:23:21Z",
+  "ultima_actualizare": "2026-08-23T06:24:45Z",
   "zilnic": {
     "2026-03-01": {
       "clones_total": 0,
@@ -4301,7 +4301,11 @@
           "vizite": 1,
           "vizitatori_unici": 1
         }
-      ]
+      ],
+      "clones_total": 7,
+      "clones_unice": 5,
+      "views_total": 1,
+      "views_unice": 1
     },
     "2026-08-22": {
       "stars": 3,
@@ -4331,6 +4335,48 @@
         },
         {
           "sursa": "hubinteligent.org",
+          "vizite": 1,
+          "vizitatori_unici": 1
+        },
+        {
+          "sursa": "qwant.com",
+          "vizite": 1,
+          "vizitatori_unici": 1
+        }
+      ],
+      "clones_total": 8,
+      "clones_unice": 4,
+      "views_total": 4,
+      "views_unice": 3
+    },
+    "2026-08-23": {
+      "stars": 3,
+      "forks": 0,
+      "watchers": 0,
+      "open_issues": 0,
+      "referrers": [
+        {
+          "sursa": "DuckDuckGo",
+          "vizite": 12,
+          "vizitatori_unici": 9
+        },
+        {
+          "sursa": "github.com",
+          "vizite": 5,
+          "vizitatori_unici": 5
+        },
+        {
+          "sursa": "Bing",
+          "vizite": 4,
+          "vizitatori_unici": 4
+        },
+        {
+          "sursa": "hubinteligent.org",
+          "vizite": 3,
+          "vizitatori_unici": 2
+        },
+        {
+          "sursa": "Yahoo",
           "vizite": 1,
           "vizitatori_unici": 1
         },
