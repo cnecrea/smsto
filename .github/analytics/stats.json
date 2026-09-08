@@ -1,7 +1,7 @@
 {
   "repo": "",
   "prima_colectare": "",
-  "ultima_actualizare": "2026-09-07T11:05:58Z",
+  "ultima_actualizare": "2026-09-08T10:18:45Z",
   "zilnic": {
     "2026-03-01": {
       "clones_total": 0,
@@ -4998,7 +4998,11 @@
           "vizite": 1,
           "vizitatori_unici": 1
         }
-      ]
+      ],
+      "clones_total": 6,
+      "clones_unice": 2,
+      "views_total": 0,
+      "views_unice": 0
     },
     "2026-09-07": {
       "stars": 3,
@@ -5031,11 +5035,48 @@
           "vizite": 1,
           "vizitatori_unici": 1
         }
+      ],
+      "clones_total": 10,
+      "clones_unice": 5,
+      "views_total": 3,
+      "views_unice": 2
+    },
+    "2026-09-08": {
+      "stars": 3,
+      "forks": 0,
+      "watchers": 0,
+      "open_issues": 0,
+      "referrers": [
+        {
+          "sursa": "Bing",
+          "vizite": 6,
+          "vizitatori_unici": 6
+        },
+        {
+          "sursa": "github.com",
+          "vizite": 6,
+          "vizitatori_unici": 6
+        },
+        {
+          "sursa": "DuckDuckGo",
+          "vizite": 5,
+          "vizitatori_unici": 5
+        },
+        {
+          "sursa": "qwant.com",
+          "vizite": 2,
+          "vizitatori_unici": 2
+        },
+        {
+          "sursa": "ecosia.org",
+          "vizite": 1,
+          "vizitatori_unici": 1
+        }
       ]
     }
   },
   "releases": {
-    "2.0.0": 1,
+    "2.0.0": 2,
     "1.1.0": 7,
     "1.0.0": 10
   }
