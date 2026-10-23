@@ -1,13 +1,18 @@
 {
   "domain": "smsto",
   "name": "SMS Notifications via SMS.to",
+  "categories": [
+    "messaging_notifications.email_sms_calls"
+  ],
   "codeowners": [
     "@cnecrea"
   ],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/cnecrea/smsto",
-  "iot_class": "cloud_push",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/cnecrea/smsto/issues",
+  "requirements": [],
   "version": "2.0.0"
 }

@@ -2,38 +2,273 @@
   "config": {
     "step": {
       "user": {
-        "title": "Configurează SMS.to",
-        "description": "Introdu cheia API și ID-ul expeditorului pentru a configura notificările SMS.to.",
+        "title": "Conectare SMS.to",
+        "description": "Introdu cheia API SMS.to și expeditorul folosit pentru mesaje. Cheia se verifică citind soldul — nu se trimite niciun SMS.",
         "data": {
           "api_key": "Cheie API",
-          "sender_id": "ID Expeditor"
+          "sender_id": "Expeditor"
+        },
+        "data_description": {
+          "api_key": "Din app.sms.to → Settings → API Keys.",
+          "sender_id": "Număr de telefon în format internațional (de exemplu +40712345678) sau un nume de cel mult 11 caractere. Numărul de telefon se folosește și pentru calculul costului unui SMS."
         }
       },
-      "test_message": {
-        "title": "Mesaj de Test",
-        "description": "Introdu un număr de telefon pentru a trimite un mesaj de test și pentru a verifica funcționalitatea integrării.",
+      "cost_number": {
+        "title": "Număr pentru costul SMS",
+        "description": "Expeditorul {sender_id} este un nume, deci nu poate fi folosit pentru calculul costului unui SMS. Introdu un număr de telefon din țara în care trimiți de obicei, în format internațional. Nu se trimite nimic către el. Lasă câmpul gol dacă nu vrei senzorii de cost și de SMS-uri disponibile.",
         "data": {
-          "test_number": "Număr Telefon Test"
+          "cost_number": "Număr de telefon"
+        },
+        "data_description": {
+          "cost_number": "Folosit doar pentru estimarea costului unui SMS; nu se trimite nimic."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconectează SMS.to",
+        "description": "SMS.to a refuzat cheia API pentru expeditorul {sender_id}. Introdu o cheie API validă.",
+        "data": {
+          "api_key": "Cheie API"
+        },
+        "data_description": {
+          "api_key": "Din app.sms.to → Settings → API Keys."
+        }
+      },
+      "reconfigure": {
+        "title": "Actualizează setările SMS.to",
+        "description": "Schimbă cheia API, expeditorul sau numărul folosit pentru calculul costului. Integrarea se reîncarcă cu noile setări.",
+        "data": {
+          "api_key": "Cheie API",
+          "sender_id": "Expeditor",
+          "cost_number": "Număr de telefon"
+        },
+        "data_description": {
+          "sender_id": "Număr de telefon în format internațional (de exemplu +40712345678) sau un nume de cel mult 11 caractere. Numărul de telefon se folosește și pentru calculul costului unui SMS.",
+          "cost_number": "Folosit doar pentru estimarea costului unui SMS; nu se trimite nimic."
         }
       }
     },
     "error": {
-      "invalid_api_key": "Cheia API furnizată este invalidă. Te rugăm să introduci o cheie API validă.",
-      "invalid_sender_id": "ID-ul Expeditorului furnizat este invalid. Te rugăm să introduci un ID Expeditor valid.",
-      "invalid_test_number": "Numărul de telefon pentru test este invalid. Te rugăm să introduci un număr valid.",
-      "test_message_failed": "Trimiterea mesajului de test a eșuat. Te rugăm să verifici configurația și să încerci din nou."
+      "invalid_auth": "SMS.to a refuzat cheia API. Verific-o în app.sms.to → Settings → API Keys.",
+      "cannot_connect": "SMS.to nu poate fi contactat. Verifică conexiunea la internet și încearcă din nou.",
+      "invalid_sender_id": "Introdu un număr de telefon în format internațional sau un nume de cel mult 11 litere și cifre.",
+      "invalid_number": "Numărul nu e valid pentru SMS.to. Folosește formatul internațional, de exemplu +40712345678.",
+      "already_configured": "Alt cont SMS.to folosește deja acest expeditor.",
+      "unknown": "Eroare neașteptată. Verifică jurnalul Home Assistant."
     },
     "abort": {
-      "already_configured": "Acest cont este deja configurat. Actualizează integrarea existentă dacă este necesar."
+      "already_configured": "Acest expeditor este deja configurat.",
+      "reauth_successful": "Cheia API a fost actualizată.",
+      "reconfigure_successful": "Setările au fost actualizate."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Actualizează setările SMS.to",
+        "description": "Schimbă cheia API, expeditorul sau numărul folosit pentru calculul costului. Integrarea se reîncarcă cu noile setări.",
+        "data": {
+          "api_key": "Cheie API",
+          "sender_id": "Expeditor",
+          "cost_number": "Număr de telefon"
+        },
+        "data_description": {
+          "sender_id": "Număr de telefon în format internațional (de exemplu +40712345678) sau un nume de cel mult 11 caractere. Numărul de telefon se folosește și pentru calculul costului unui SMS.",
+          "cost_number": "Folosit doar pentru estimarea costului unui SMS; nu se trimite nimic."
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "SMS.to a refuzat cheia API. Verific-o în app.sms.to → Settings → API Keys.",
+      "cannot_connect": "SMS.to nu poate fi contactat. Verifică conexiunea la internet și încearcă din nou.",
+      "invalid_sender_id": "Introdu un număr de telefon în format internațional sau un nume de cel mult 11 litere și cifre.",
+      "invalid_number": "Numărul nu e valid pentru SMS.to. Folosește formatul internațional, de exemplu +40712345678.",
+      "already_configured": "Alt cont SMS.to folosește deja acest expeditor.",
+      "unknown": "Eroare neașteptată. Verifică jurnalul Home Assistant."
     }
   },
   "entity": {
     "sensor": {
       "balance": {
-        "name": "Balanță"
+        "name": "Sold"
       },
-      "total_messages": {
-        "name": "Total SMS Trimise"
+      "available_sms": {
+        "name": "SMS-uri disponibile",
+        "state_attributes": {
+          "cost_per_sms": {
+            "name": "Cost per SMS"
+          },
+          "parts_per_message": {
+            "name": "Părți per mesaj"
+          },
+          "calculated_for": {
+            "name": "Calculat pentru"
+          },
+          "balance": {
+            "name": "Sold"
+          }
+        }
+      },
+      "cost_per_sms": {
+        "name": "Cost per SMS"
+      },
+      "last_message": {
+        "name": "Ultimul SMS",
+        "state": {
+          "delivered": "Livrat",
+          "sent": "Trimis",
+          "sending": "Se trimite",
+          "queued": "În coadă",
+          "scheduled": "Programat",
+          "failed": "Eșuat",
+          "expired": "Expirat",
+          "rejected": "Respins",
+          "unsubscribed": "Dezabonat",
+          "unknown": "Necunoscut"
+        },
+        "state_attributes": {
+          "sent_at": {
+            "name": "Trimis la"
+          },
+          "recipient": {
+            "name": "Destinatar"
+          },
+          "cost": {
+            "name": "Cost"
+          },
+          "channel": {
+            "name": "Canal",
+            "state": {
+              "sms": "SMS",
+              "fsms": "Flash SMS",
+              "viber": "Viber",
+              "whatsapp": "WhatsApp",
+              "telegram": "Telegram"
+            }
+          },
+          "parts": {
+            "name": "Părți"
+          },
+          "source": {
+            "name": "Trimis prin",
+            "state": {
+              "api": "API",
+              "web": "Web"
+            }
+          },
+          "failed_reason": {
+            "name": "Motivul eșecului"
+          },
+          "raw_status": {
+            "name": "Status SMS.to"
+          }
+        }
+      },
+      "sent_this_month": {
+        "name": "SMS-uri trimise luna aceasta",
+        "state_attributes": {
+          "month": {
+            "name": "Luna"
+          },
+          "by_channel": {
+            "name": "Pe canale"
+          },
+          "by_country": {
+            "name": "Pe țări"
+          },
+          "previous_month_count": {
+            "name": "Luna trecută"
+          },
+          "previous_month_cost": {
+            "name": "Cost luna trecută"
+          }
+        }
+      },
+      "cost_this_month": {
+        "name": "Cost luna aceasta",
+        "state_attributes": {
+          "previous_month_cost": {
+            "name": "Cost luna trecută"
+          }
+        }
+      },
+      "messages_30_days": {
+        "name": "Mesaje în ultimele 30 de zile",
+        "state_attributes": {
+          "delivered": {
+            "name": "Livrate"
+          },
+          "failed": {
+            "name": "Eșuate"
+          },
+          "pending": {
+            "name": "În așteptare"
+          },
+          "delivery_rate": {
+            "name": "Rata de livrare (%)"
+          },
+          "cost": {
+            "name": "Cost"
+          },
+          "parts": {
+            "name": "Părți"
+          },
+          "via_api": {
+            "name": "Prin API"
+          },
+          "via_web": {
+            "name": "Din web"
+          },
+          "list_truncated": {
+            "name": "Listă incompletă (peste 1000 de mesaje)"
+          }
+        }
+      },
+      "last_campaign": {
+        "name": "Ultima campanie",
+        "state": {
+          "done": "Finalizată",
+          "scheduled": "Programată",
+          "sending": "În curs",
+          "canceled": "Anulată",
+          "unknown": "Necunoscută"
+        },
+        "state_attributes": {
+          "total_campaigns": {
+            "name": "Total campanii"
+          },
+          "created_at": {
+            "name": "Creată la"
+          },
+          "sent": {
+            "name": "Trimise"
+          },
+          "delivered": {
+            "name": "Livrate"
+          },
+          "failed": {
+            "name": "Eșuate"
+          },
+          "pending": {
+            "name": "În așteptare"
+          },
+          "cost": {
+            "name": "Cost"
+          }
+        }
+      },
+      "inbound_sms": {
+        "name": "SMS-uri primite (ultima oră)",
+        "state_attributes": {
+          "last_from": {
+            "name": "Ultimul expeditor"
+          },
+          "last_received": {
+            "name": "Ultimul primit"
+          }
+        }
+      },
+      "optouts": {
+        "name": "Dezabonări recente"
       }
     }
   },
@@ -59,22 +294,6 @@
           "description": "Date suplimentare specifice platformei, precum un URL de callback sau nivelul de prioritate."
         }
       }
-    }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Modifică Setările SMS.to",
-        "description": "Actualizează cheia API sau ID-ul Expeditor pentru notificările SMS.to.",
-        "data": {
-          "api_key": "Cheie API",
-          "sender_id": "ID Expeditor"
-        }
-      }
-    },
-    "error": {
-      "invalid_api_key": "Cheia API actualizată este invalidă. Te rugăm să verifici și să încerci din nou.",
-      "invalid_sender_id": "ID-ul Expeditor actualizat este invalid. Te rugăm să verifici și să încerci din nou."
     }
   }
 }

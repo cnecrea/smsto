@@ -2,29 +2,88 @@
   "config": {
     "step": {
       "user": {
-        "title": "Configure SMS.to",
-        "description": "Enter the API key and sender ID to configure SMS.to notifications.",
+        "title": "Connect SMS.to",
+        "description": "Enter your SMS.to API key and the sender used for your messages. The key is checked by reading your balance — no SMS is sent.",
         "data": {
-          "api_key": "API Key",
-          "sender_id": "Sender ID"
+          "api_key": "API key",
+          "sender_id": "Sender"
+        },
+        "data_description": {
+          "api_key": "From app.sms.to → Settings → API keys.",
+          "sender_id": "Phone number in international format (for example +40712345678) or a name of up to 11 characters. A phone number is also used to calculate the cost of an SMS."
         }
       },
-      "test_message": {
-        "title": "Test Message",
-        "description": "Enter a phone number to send a test message and verify the integration functionality.",
+      "cost_number": {
+        "title": "Number for the SMS cost",
+        "description": "The sender {sender_id} is a name, so it can't be used to calculate the cost of an SMS. Enter a phone number in the country you usually send to, in international format. Nothing is sent to it. Leave it empty to skip the cost and available SMS sensors.",
         "data": {
-          "test_number": "Test Phone Number"
+          "cost_number": "Phone number"
+        },
+        "data_description": {
+          "cost_number": "Used only to estimate the cost of an SMS; nothing is sent."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconnect SMS.to",
+        "description": "SMS.to rejected the API key for sender {sender_id}. Enter a valid API key.",
+        "data": {
+          "api_key": "API key"
+        },
+        "data_description": {
+          "api_key": "From app.sms.to → Settings → API keys."
+        }
+      },
+      "reconfigure": {
+        "title": "Update SMS.to settings",
+        "description": "Change the API key, the sender, or the number used to calculate the SMS cost. The integration reloads with the new settings.",
+        "data": {
+          "api_key": "API key",
+          "sender_id": "Sender",
+          "cost_number": "Phone number"
+        },
+        "data_description": {
+          "sender_id": "Phone number in international format (for example +40712345678) or a name of up to 11 characters. A phone number is also used to calculate the cost of an SMS.",
+          "cost_number": "Used only to estimate the cost of an SMS; nothing is sent."
         }
       }
     },
     "error": {
-      "invalid_api_key": "The provided API key is invalid. Please enter a valid API key.",
-      "invalid_sender_id": "The provided sender ID is invalid. Please enter a valid sender ID.",
-      "invalid_test_number": "The test phone number is invalid. Please enter a valid number.",
-      "test_message_failed": "Sending the test message failed. Please check the configuration and try again."
+      "invalid_auth": "SMS.to rejected the API key. Check it in app.sms.to → Settings → API keys.",
+      "cannot_connect": "SMS.to can't be reached. Check your internet connection and try again.",
+      "invalid_sender_id": "Enter a phone number in international format or a name of up to 11 letters and digits.",
+      "invalid_number": "The number isn't valid for SMS.to. Use the international format, for example +40712345678.",
+      "already_configured": "Another SMS.to entry already uses this sender.",
+      "unknown": "Unexpected error. Check the Home Assistant log."
     },
     "abort": {
-      "already_configured": "This account is already configured. Update the existing integration if necessary."
+      "already_configured": "This sender is already configured.",
+      "reauth_successful": "The API key was updated.",
+      "reconfigure_successful": "The settings were updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update SMS.to settings",
+        "description": "Change the API key, the sender, or the number used to calculate the SMS cost. The integration reloads with the new settings.",
+        "data": {
+          "api_key": "API key",
+          "sender_id": "Sender",
+          "cost_number": "Phone number"
+        },
+        "data_description": {
+          "sender_id": "Phone number in international format (for example +40712345678) or a name of up to 11 characters. A phone number is also used to calculate the cost of an SMS.",
+          "cost_number": "Used only to estimate the cost of an SMS; nothing is sent."
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "SMS.to rejected the API key. Check it in app.sms.to → Settings → API keys.",
+      "cannot_connect": "SMS.to can't be reached. Check your internet connection and try again.",
+      "invalid_sender_id": "Enter a phone number in international format or a name of up to 11 letters and digits.",
+      "invalid_number": "The number isn't valid for SMS.to. Use the international format, for example +40712345678.",
+      "already_configured": "Another SMS.to entry already uses this sender.",
+      "unknown": "Unexpected error. Check the Home Assistant log."
     }
   },
   "entity": {
@@ -32,8 +91,184 @@
       "balance": {
         "name": "Balance"
       },
-      "total_messages": {
-        "name": "Total SMS Sent"
+      "available_sms": {
+        "name": "Available SMS",
+        "state_attributes": {
+          "cost_per_sms": {
+            "name": "Cost per SMS"
+          },
+          "parts_per_message": {
+            "name": "Parts per message"
+          },
+          "calculated_for": {
+            "name": "Calculated for"
+          },
+          "balance": {
+            "name": "Balance"
+          }
+        }
+      },
+      "cost_per_sms": {
+        "name": "Cost per SMS"
+      },
+      "last_message": {
+        "name": "Last SMS",
+        "state": {
+          "delivered": "Delivered",
+          "sent": "Sent",
+          "sending": "Sending",
+          "queued": "Queued",
+          "scheduled": "Scheduled",
+          "failed": "Failed",
+          "expired": "Expired",
+          "rejected": "Rejected",
+          "unsubscribed": "Unsubscribed",
+          "unknown": "Unknown"
+        },
+        "state_attributes": {
+          "sent_at": {
+            "name": "Sent at"
+          },
+          "recipient": {
+            "name": "Recipient"
+          },
+          "cost": {
+            "name": "Cost"
+          },
+          "channel": {
+            "name": "Channel",
+            "state": {
+              "sms": "SMS",
+              "fsms": "Flash SMS",
+              "viber": "Viber",
+              "whatsapp": "WhatsApp",
+              "telegram": "Telegram"
+            }
+          },
+          "parts": {
+            "name": "Parts"
+          },
+          "source": {
+            "name": "Sent via",
+            "state": {
+              "api": "API",
+              "web": "Web"
+            }
+          },
+          "failed_reason": {
+            "name": "Failure reason"
+          },
+          "raw_status": {
+            "name": "Status from SMS.to"
+          }
+        }
+      },
+      "sent_this_month": {
+        "name": "SMS sent this month",
+        "state_attributes": {
+          "month": {
+            "name": "Month"
+          },
+          "by_channel": {
+            "name": "By channel"
+          },
+          "by_country": {
+            "name": "By country"
+          },
+          "previous_month_count": {
+            "name": "Last month"
+          },
+          "previous_month_cost": {
+            "name": "Cost last month"
+          }
+        }
+      },
+      "cost_this_month": {
+        "name": "Cost this month",
+        "state_attributes": {
+          "previous_month_cost": {
+            "name": "Cost last month"
+          }
+        }
+      },
+      "messages_30_days": {
+        "name": "Messages in the last 30 days",
+        "state_attributes": {
+          "delivered": {
+            "name": "Delivered"
+          },
+          "failed": {
+            "name": "Failed"
+          },
+          "pending": {
+            "name": "Pending"
+          },
+          "delivery_rate": {
+            "name": "Delivery rate (%)"
+          },
+          "cost": {
+            "name": "Cost"
+          },
+          "parts": {
+            "name": "Parts"
+          },
+          "via_api": {
+            "name": "Via API"
+          },
+          "via_web": {
+            "name": "Via web"
+          },
+          "list_truncated": {
+            "name": "List truncated (over 1000 messages)"
+          }
+        }
+      },
+      "last_campaign": {
+        "name": "Last campaign",
+        "state": {
+          "done": "Done",
+          "scheduled": "Scheduled",
+          "sending": "Sending",
+          "canceled": "Canceled",
+          "unknown": "Unknown"
+        },
+        "state_attributes": {
+          "total_campaigns": {
+            "name": "Total campaigns"
+          },
+          "created_at": {
+            "name": "Created at"
+          },
+          "sent": {
+            "name": "Sent"
+          },
+          "delivered": {
+            "name": "Delivered"
+          },
+          "failed": {
+            "name": "Failed"
+          },
+          "pending": {
+            "name": "Pending"
+          },
+          "cost": {
+            "name": "Cost"
+          }
+        }
+      },
+      "inbound_sms": {
+        "name": "SMS received (last hour)",
+        "state_attributes": {
+          "last_from": {
+            "name": "Last sender"
+          },
+          "last_received": {
+            "name": "Last received"
+          }
+        }
+      },
+      "optouts": {
+        "name": "Recent opt-outs"
       }
     }
   },
@@ -59,22 +294,6 @@
           "description": "Platform-specific additional data such as a callback URL or priority level."
         }
       }
-    }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Modify SMS.to Settings",
-        "description": "Update the API key or sender ID for SMS.to notifications.",
-        "data": {
-          "api_key": "API Key",
-          "sender_id": "Sender ID"
-        }
-      }
-    },
-    "error": {
-      "invalid_api_key": "The updated API key is invalid. Please verify and try again.",
-      "invalid_sender_id": "The updated sender ID is invalid. Please verify and try again."
     }
   }
 }
