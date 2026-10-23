@@ -1,9 +1,6 @@
 {
   "domain": "smsto",
   "name": "SMS Notifications via SMS.to",
-  "categories": [
-    "messaging_notifications.email_sms_calls"
-  ],
   "codeowners": [
     "@cnecrea"
   ],
