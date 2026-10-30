@@ -30,6 +30,11 @@ TIMEOUT = 20
 
 # ── Actualizare ──
 UPDATE_INTERVAL = timedelta(minutes=10)
+# Cheia API se cere din nou abia dacă SMS.to o refuză (la sold, endpoint-ul care o validează) fără
+# întrerupere atâta timp: un 401 izolat (eroare trecătoare la SMS.to) nu mai deconectează contul.
+AUTH_REFUSAL_GRACE = timedelta(minutes=15)
+# Un refuz al soldului se reîncearcă o dată, după atâtea secunde
+AUTH_RETRY_DELAY = 2
 # Se schimbă rar: costul per SMS și raportul lunii trecute se recitesc o dată pe oră
 SLOW_REFRESH = timedelta(hours=1)
 # API-ul de mesaje întoarce cel mult 31 de zile; cerem 30, cu cel mult atâtea mesaje
