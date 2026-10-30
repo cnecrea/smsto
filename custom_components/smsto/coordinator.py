@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 from collections import Counter
@@ -16,6 +17,8 @@ from homeassistant.util import dt as dt_util
 
 from .api import SmsToAuthError, SmsToClient, SmsToError, mask_phone, sender_label
 from .const import (
+    AUTH_REFUSAL_GRACE,
+    AUTH_RETRY_DELAY,
     CAMPAIGN_STATUS_ALIASES,
     CONF_COST_NUMBER,
     CONF_SENDER_ID,
@@ -46,6 +49,11 @@ def cost_number(entry: ConfigEntry) -> str | None:
         return number
     sender = (entry.data.get(CONF_SENDER_ID) or "").replace(" ", "")
     return sender if is_phone_number(sender) else None
+
+
+def auth_refusals(hass: HomeAssistant) -> dict[str, datetime]:
+    """Momentul primului refuz al cheii, pe intrare — comun, ca să supraviețuiască reîncercărilor de pornire."""
+    return hass.data.setdefault(f"{DOMAIN}_refuzuri_cheie", {})
 
 
 def message_status(value: Any) -> str:
@@ -141,47 +149,60 @@ class SmsToCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
 
         async def fetch(key: str, call, *, keep_previous: bool = True) -> None:
-            """Un endpoint: la eroare temporară păstrează valoarea anterioară."""
+            """Un endpoint: la eroare temporară păstrează valoarea anterioară.
+
+            Un 401 aici NU înseamnă cheie invalidă: cheia o validează doar soldul (auth.sms.to);
+            celelalte servicii (api.sms.to, app.sms.to) pot refuza separat, trecător.
+            """
             try:
                 data[key] = await call()
-            except SmsToAuthError:
-                raise
             except SmsToError as err:
                 failed.append(key)
                 if keep_previous and key in previous:
                     data[key] = previous[key]
-                self._debug("%s indisponibil — %s (%s)", key, err,
+                refused = f" (refuz 401 de la {err.endpoint})" if isinstance(err, SmsToAuthError) else ""
+                self._debug("%s indisponibil — %s%s (%s)", key, err, refused,
                             "păstrez valoarea anterioară" if key in data else "fără valoare anterioară")
 
         try:
-            await fetch("balance", self.client.async_get_balance)
-
-            number = cost_number(self.config_entry)
-            if not number:
-                self._debug("Fără număr pentru cost: costul per SMS și SMS-urile disponibile rămân necunoscute")
-            elif slow_due or "estimate" not in previous:
-                await fetch("estimate", lambda: self.client.async_estimate(number))
-            else:
-                data["estimate"] = previous["estimate"]
-
-            this_month = now.strftime("%Y-%m")
-            last_month = (now.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
-            await fetch("usage_current", lambda: self.client.async_monthly_usage(this_month))
-            if slow_due or "usage_previous" not in previous:
-                await fetch("usage_previous", lambda: self.client.async_monthly_usage(last_month))
-            else:
-                data["usage_previous"] = previous["usage_previous"]
-
-            since = (now - timedelta(days=MESSAGES_DAYS)).strftime("%Y-%m-%d 00:00:00")
-            await fetch("last_message", self.client.async_last_message)
-            await fetch("messages", lambda: self.client.async_messages(since, MESSAGES_LIMIT))
-            await fetch("last_campaign", self.client.async_last_campaign)
-            await fetch("campaigns_total", self.client.async_campaigns_total)
-            await fetch("inbound", self.client.async_inbound)
-            await fetch("optouts", self.client.async_optouts)
+            data["balance"] = await self._async_balance()
         except SmsToAuthError as err:
-            self._debug("Cheia API a fost refuzată (%s) — Home Assistant va cere reautentificarea", err)
-            raise ConfigEntryAuthFailed(f"SMS.to a refuzat cheia API: {err}") from err
+            return self._key_refused(err, previous)
+        except SmsToError as err:
+            failed.append("balance")
+            if "balance" in previous:
+                data["balance"] = previous["balance"]
+            self._debug("balance indisponibil — %s (%s)", err,
+                        "păstrez valoarea anterioară" if "balance" in data else "fără valoare anterioară")
+        else:
+            first_refusal = auth_refusals(self.hass).pop(self.config_entry.entry_id, None)
+            if first_refusal is not None:
+                _LOGGER.info("[%s] SMS.to acceptă din nou cheia API (refuzată din %s)", self.label,
+                             dt_util.as_local(first_refusal).strftime("%H:%M"))
+
+        number = cost_number(self.config_entry)
+        if not number:
+            self._debug("Fără număr pentru cost: costul per SMS și SMS-urile disponibile rămân necunoscute")
+        elif slow_due or "estimate" not in previous:
+            await fetch("estimate", lambda: self.client.async_estimate(number))
+        else:
+            data["estimate"] = previous["estimate"]
+
+        this_month = now.strftime("%Y-%m")
+        last_month = (now.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
+        await fetch("usage_current", lambda: self.client.async_monthly_usage(this_month))
+        if slow_due or "usage_previous" not in previous:
+            await fetch("usage_previous", lambda: self.client.async_monthly_usage(last_month))
+        else:
+            data["usage_previous"] = previous["usage_previous"]
+
+        since = (now - timedelta(days=MESSAGES_DAYS)).strftime("%Y-%m-%d 00:00:00")
+        await fetch("last_message", self.client.async_last_message)
+        await fetch("messages", lambda: self.client.async_messages(since, MESSAGES_LIMIT))
+        await fetch("last_campaign", self.client.async_last_campaign)
+        await fetch("campaigns_total", self.client.async_campaigns_total)
+        await fetch("inbound", self.client.async_inbound)
+        await fetch("optouts", self.client.async_optouts)
 
         if "balance" not in data:
             # Fără sold (nici măcar unul anterior) nu avem date utile
@@ -203,6 +224,41 @@ class SmsToCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if _LOGGER.isEnabledFor(logging.DEBUG):
             self._log_summary(data, failed)
         return data
+
+    async def _async_balance(self) -> tuple[float, str]:
+        """Soldul — singurul endpoint care validează cheia. Un refuz se reîncearcă o dată, după 2 s."""
+        try:
+            return await self.client.async_get_balance()
+        except SmsToAuthError as err:
+            self._debug("Soldul a refuzat cheia (%s) — reîncerc o dată peste %d s", err, AUTH_RETRY_DELAY)
+            await asyncio.sleep(AUTH_RETRY_DELAY)
+            balance = await self.client.async_get_balance()
+            self._debug("Refuz izolat: a doua încercare a reușit")
+            return balance
+
+    def _key_refused(self, err: SmsToAuthError, previous: dict[str, Any]) -> dict[str, Any]:
+        """Cheia refuzată de două ori la rând: păstrează datele și cere cheia abia după AUTH_REFUSAL_GRACE."""
+        refusals = auth_refusals(self.hass)
+        now = dt_util.utcnow()
+        first = refusals.setdefault(self.config_entry.entry_id, now)
+        if now - first >= AUTH_REFUSAL_GRACE:
+            refusals.pop(self.config_entry.entry_id, None)
+            _LOGGER.warning(
+                "[%s] SMS.to refuză cheia API de %d minute (%s, %s) — Home Assistant îți cere cheia din nou",
+                self.label, int((now - first).total_seconds() // 60), err, err.endpoint,
+            )
+            raise ConfigEntryAuthFailed(f"SMS.to a refuzat cheia API: {err}") from err
+        if first == now:
+            _LOGGER.warning(
+                "[%s] SMS.to a refuzat cheia API (%s, %s). Poate fi o eroare trecătoare la SMS.to: păstrez "
+                "valorile anterioare și reîncerc; dacă refuzul durează %d minute, Home Assistant îți va cere cheia.",
+                self.label, err, err.endpoint, int(AUTH_REFUSAL_GRACE.total_seconds() // 60),
+            )
+        else:
+            self._debug("Cheia e refuzată în continuare (din %s)", dt_util.as_local(first).strftime("%H:%M"))
+        if previous:
+            return previous
+        raise UpdateFailed(f"SMS.to a refuzat cheia API: {err}")
 
     def _log_summary(self, data: dict[str, Any], failed: list[str]) -> None:
         """Un rând cu valorile pe care le vor arăta senzorii."""
