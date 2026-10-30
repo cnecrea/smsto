@@ -33,7 +33,11 @@ class SmsToError(Exception):
 
 
 class SmsToAuthError(SmsToError):
-    """Cheia API a fost refuzată (HTTP 401)."""
+    """Cheia API a fost refuzată (HTTP 401). `endpoint`: adresa care a refuzat-o."""
+
+    def __init__(self, message: str, endpoint: str | None = None) -> None:
+        super().__init__(message)
+        self.endpoint = endpoint
 
 
 def mask_phone(number: Any) -> str | None:
@@ -95,7 +99,7 @@ class SmsToClient:
         else:
             self._debug("%s %s → HTTP %s în %.0f ms (%d octeți)", method, endpoint, status, elapsed_ms, len(text))
         if status == 401:
-            raise SmsToAuthError(_api_message(data) or "Cheie API invalidă")
+            raise SmsToAuthError(_api_message(data) or "Cheie API invalidă", endpoint)
         if status == 404 and allow_404:
             return None
         if status >= 400:
