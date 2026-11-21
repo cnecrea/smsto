@@ -1,7 +1,7 @@
 {
   "repo": "",
   "prima_colectare": "",
-  "ultima_actualizare": "2026-11-20T14:51:43Z",
+  "ultima_actualizare": "2026-11-21T14:10:19Z",
   "zilnic": {
     "2026-03-01": {
       "clones_total": 0,
@@ -6462,6 +6462,38 @@
           "sursa": "hubinteligent.org",
           "vizite": 1,
           "vizitatori_unici": 1
+        }
+      ],
+      "clones_total": 5,
+      "clones_unice": 2,
+      "views_total": 3,
+      "views_unice": 3
+    },
+    "2026-11-21": {
+      "stars": 4,
+      "forks": 0,
+      "watchers": 0,
+      "open_issues": 0,
+      "referrers": [
+        {
+          "sursa": "github.com",
+          "vizite": 9,
+          "vizitatori_unici": 8
+        },
+        {
+          "sursa": "DuckDuckGo",
+          "vizite": 4,
+          "vizitatori_unici": 3
+        },
+        {
+          "sursa": "Bing",
+          "vizite": 2,
+          "vizitatori_unici": 2
+        },
+        {
+          "sursa": "hubinteligent.org",
+          "vizite": 2,
+          "vizitatori_unici": 2
         }
       ]
     }
